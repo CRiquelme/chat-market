@@ -87,12 +87,7 @@
     
                 <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon>mdi-heart</v-icon>
-                </v-btn>
-                <v-btn icon>
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
+                
               </v-toolbar>
               <v-card-text>
                 <span v-html="selectedEvent.details"></span>
@@ -103,7 +98,7 @@
                   color="secondary"
                   @click="selectedOpen = false"
                 >
-                  Cancel
+                  Cancelar
                 </v-btn>
                 <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
                 Ofrecer Horario
@@ -386,13 +381,14 @@
             const start = new Date(appData.start.seconds * 1000);
             const titulo = appData.available ? `${appData.user_name} 🟢` : `${appData.user_name}`;
             const color = appData.color;
+            const details = `${moment(start).format('DD-MM-YYYY HH:mm')} - ${moment(end).format('HH:mm')}`;
             
             events.push({
               color: color,
               id: appData.id,
               start: moment(start).format('YYYY-MM-DD HH:mm'),
               end: moment(end).format('YYYY-MM-DD HH:mm'),
-              details: appData.user_name,
+              details: details,
               user: appData.user_name,
               user_id: appData.user_id,
               run: appData.run,
