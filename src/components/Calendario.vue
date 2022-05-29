@@ -96,9 +96,8 @@
           <v-col>
           <v-card elevation=0>
             <v-container>
-              <!-- v-if="user_available_event != null && colleague_available_event.length > 0"  -->
-                <h3 v-if="user_available_event === null">Horario que necesito</h3>
-                <h3 v-else-if="colleague_available_event.length < 1">Horario que necesito</h3>
+                <h3 v-if="user_available_event === null">&nbsp;</h3>
+                <h3 v-else-if="colleague_available_event.length < 1">&nbsp;</h3>
                 <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4" @click.prevent="enviarSolicitud()">
               Enviar solicitud
               </v-btn>
