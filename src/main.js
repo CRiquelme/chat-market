@@ -5,7 +5,7 @@ import vuetify from "./plugins/vuetify";
 Vue.config.productionTip = false;
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
-import 'firebase/compat/auth';
+import "firebase/compat/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCoBy5jilV8vK3_-TQskRB_C8XAveDlG38",
@@ -26,31 +26,31 @@ new Vue({
 
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
-auth.languageCode = 'es';
+auth.languageCode = "es";
 
-async function login(){
-    try {
-        const response = await auth.signInWithPopup(provider);
-        console.log(response);
-        return response.user;
-    } catch (error) {
-        throw new Error(error);
-    }
+async function login() {
+  try {
+    const response = await auth.signInWithPopup(provider);
+    console.log(response);
+    return response.user;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 function logout() {
-    auth.signOut();
+  auth.signOut();
 }
 
-const btnLogin = document.querySelector('#btn-login');
-const btnLogout = document.querySelector('#btn-logout');
-const hiUser = document.querySelector('#hi-user');
-const calendario = document.querySelector('#calendario');
-const solicitudes = document.querySelector('#tablaSolicitudes');
+const btnLogin = document.querySelector("#btn-login");
+const btnLogout = document.querySelector("#btn-logout");
+const hiUser = document.querySelector("#hi-user");
+const calendario = document.querySelector("#calendario");
+const solicitudes = document.querySelector("#tablaSolicitudes");
 export let currentUser;
 
-firebase.auth().onAuthStateChanged(user => {
-  if (user){
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
     currentUser = user;
     init();
   }
@@ -58,27 +58,29 @@ firebase.auth().onAuthStateChanged(user => {
 
 btnLogin.addEventListener("click", async () => {
   try {
-     currentUser = await login();
-     console.log(currentUser);
-  } catch (error) {console.log(error);}
+    currentUser = await login();
+    console.log(currentUser);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
-btnLogout.addEventListener('click', () => {
+btnLogout.addEventListener("click", () => {
   logout();
-  btnLogin.classList.remove('d-none');
-  btnLogout.classList.add('d-none');
+  btnLogin.classList.remove("d-none");
+  btnLogout.classList.add("d-none");
   hiUser.innerHTML = "";
-  hiUser.classList.add('d-none');
-  calendario.classList.add('d-none');
-  solicitudes.classList.add('d-none');
+  hiUser.classList.add("d-none");
+  calendario.classList.add("d-none");
+  solicitudes.classList.add("d-none");
 });
 
-function init(){
-  btnLogin.classList.add('d-none');
-  btnLogout.classList.remove('d-none');
+function init() {
+  btnLogin.classList.add("d-none");
+  btnLogout.classList.remove("d-none");
 
   hiUser.innerHTML = `<h4 class="me-2 d-inline">Hola, ${currentUser.displayName}</h4><img class="rounded-circle mt-2" src="${currentUser.photoURL}" width="40"/>`;
-  hiUser.classList.remove('d-none');
-  calendario.classList.remove('d-none');
-  solicitudes.classList.remove('d-none');
+  hiUser.classList.remove("d-none");
+  calendario.classList.remove("d-none");
+  solicitudes.classList.remove("d-none");
 }

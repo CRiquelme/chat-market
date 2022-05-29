@@ -1,213 +1,227 @@
 <template>
-  <v-row class="fill-height">
-    <v-col>
-      <v-sheet height="64">
-        <v-toolbar flat color="white">
-          <v-btn outlined class="mr-4" @click="setToday">
-            Hoy
-          </v-btn>
-          <v-btn fab text small @click="prev">
-            <v-icon small>mdi-chevron-left</v-icon>
-          </v-btn>
-          <v-btn fab text small @click="next">
-            <v-icon small>mdi-chevron-right</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{ title }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-menu bottom right>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                outlined
-                v-on="on"
-              >
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-toolbar>
-      </v-sheet>
-      <v-sheet height="600">
-        <v-calendar
-          ref="calendar"
-          v-model="focus"
-          color="primary"
-          :events="events"
-          :event-color="getEventColor"
-          :event-margin-bottom="3"
-          :now="today"
-          :type="type"
-          :short-weekdays="false"
-          @click:event="showEvent"
-          @click:more="viewDay"
-          @click:date="viewDay"
-          @change="updateRange"
-          :weekdays="weekday"
-          :interval-minutes= 45
-          :first-interval="9"
-          :interval-count= 28 
-        ></v-calendar>
-
-        <!-- Agregar Modal Agregar Evento -->
-  <v-container fluid>
-    <v-card elevation=1>
-      <v-row no-gutters>
-        <v-col>
-          <v-card elevation=0>
-            <v-container>
-                <h3>Horario que ofrezco</h3>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">
-                          Nombre
-                        </th>
-                        <th class="text-left">
-                          Inicio
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody v-if="user_available_event != null">
-                      <tr>
-                        <td>{{ user_available_event.name }}</td>
-                        <td>{{ user_available_event.start | formatDate  }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-            </v-container>
-          </v-card>
-          </v-col>
-          <v-col>
-          <v-card elevation=0>
-            <v-container>
-                <h3 v-if="user_available_event === null">&nbsp;</h3>
-                <h3 v-else-if="colleague_available_event.length < 1">&nbsp;</h3>
-                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4" @click.prevent="enviarSolicitud()">
-              Enviar solicitud
-              </v-btn>
-            </v-container>
-          </v-card>
-          </v-col>
-          <v-col>
-          <v-card elevation=0>
-            <v-container>
-                <h3>Horario que solicito</h3>
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">
-                          Nombre
-                        </th>
-                        <th class="text-left">
-                          Inicio
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="event in colleague_available_event"
-                        :key="event.id"
-                      >
-                        <td>{{ event.name }}</td>
-                        <td>{{ event.start | formatDate }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-                
-            </v-container>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-container>
-      <!-- Funciones  vue -->
-        <v-menu
-          v-model="selectedOpen"
-          :close-on-content-click="true"
-          :activator="selectedElement"
-          offset-x
-        >
-          <v-card
-            color="grey lighten-4"
-            min-width="350px"
-            flat
+  <div>
+    <v-row >
+      <v-col>
+        <v-sheet height="64">
+          <v-toolbar flat color="white">
+            <v-btn outlined class="mr-4" @click="setToday">
+              Hoy
+            </v-btn>
+            <v-btn fab text small @click="prev">
+              <v-icon small>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn fab text small @click="next">
+              <v-icon small>mdi-chevron-right</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-menu bottom right>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  outlined
+                  v-on="on"
+                >
+                  <span>{{ typeToLabel[type] }}</span>
+                  <v-icon right>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="type = 'day'">
+                  <v-list-item-title>Días</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = 'week'">
+                  <v-list-item-title>Semana</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = 'month'">
+                  <v-list-item-title>Mes</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="type = '4day'">
+                  <v-list-item-title>4 días</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-toolbar>
+        </v-sheet>
+        <v-sheet height="600">
+          <v-calendar
+            ref="calendar"
+            v-model="focus"
+            color="primary"
+            :events="events"
+            :event-color="getEventColor"
+            :event-margin-bottom="3"
+            :now="today"
+            :type="type"
+            :short-weekdays="false"
+            @click:event="showEvent"
+            @click:more="viewDay"
+            @click:date="viewDay"
+            @change="updateRange"
+            :weekdays="weekday"
+            :interval-minutes= 45
+            :first-interval="9"
+            :interval-count= 28
+          ></v-calendar>
+          <!-- Agregar Modal Agregar Evento -->
+          
+          <!-- Funciones  vue -->
+          <v-menu
+            v-model="selectedOpen"
+            :close-on-content-click="true"
+            :activator="selectedElement"
+            offset-x
           >
-            <!-- Agregar Funcionalidades Editar y Eliminar -->
-            <v-toolbar
-              :color="selectedEvent.color"
-              dark
+            <v-card
+              color="grey lighten-4"
+              min-width="350px"
+              flat
             >
-              <!-- <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn> -->
-
-              
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-card-text>
-              <span v-html="selectedEvent.details"></span>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                text
-                color="secondary"
-                @click="selectedOpen = false"
+              <!-- Agregar Funcionalidades Editar y Eliminar -->
+              <v-toolbar
+                :color="selectedEvent.color"
+                dark
               >
-                Cancel
-              </v-btn>
-              <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
-              Ofrecer Horario
-              </v-btn>
-              <v-btn color="primary" dark class="mr-4" v-if="currentUserid !== selectedEvent.user_id" @click = "cargarHorarioSolicitado(selectedEvent)">
-              Solicitar Horario
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </v-sheet>
-    </v-col>
-  </v-row>
+                <!-- <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn> -->
+    
+                <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon>
+                  <v-icon>mdi-heart</v-icon>
+                </v-btn>
+                <v-btn icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <span v-html="selectedEvent.details"></span>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  text
+                  color="secondary"
+                  @click="selectedOpen = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
+                Ofrecer Horario
+                </v-btn>
+                <v-btn color="primary" dark class="mr-4" v-if="currentUserid !== selectedEvent.user_id" @click = "cargarHorarioSolicitado(selectedEvent)">
+                Solicitar Horario
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </v-sheet>
+
+        <v-container fluid>
+            <v-card elevation=1>
+              <v-row no-gutters>
+                <v-col>
+                  <v-card elevation=0>
+                    <v-container>
+                        <h3>Horario que ofrezco</h3>
+                        <v-simple-table>
+                          <template v-slot:default>
+                            <thead>
+                              <tr>
+                                <th class="text-left">
+                                  Nombre
+                                </th>
+                                <th class="text-left">
+                                  Inicio
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody v-if="user_available_event != null">
+                              <tr>
+                                <td>{{ user_available_event.name }}</td>
+                                <td>{{ user_available_event.start | formatDate  }}</td>
+                              </tr>
+                            </tbody>
+                          </template>
+                        </v-simple-table>
+                    </v-container>
+                  </v-card>
+                  </v-col>
+                  <v-col>
+                  <v-card elevation=0>
+                    <v-container>
+                        <h3 v-if="user_available_event === null">&nbsp;</h3>
+                        <h3 v-else-if="colleague_available_event.length < 1">&nbsp;</h3>
+                        <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4" @click.prevent="enviarSolicitud()">
+                      Enviar solicitud
+                      </v-btn>
+                    </v-container>
+                  </v-card>
+                  </v-col>
+                  <v-col>
+                  <v-card elevation=0>
+                    <v-container>
+                        <h3>Horario que solicito</h3>
+                        <v-simple-table>
+                          <template v-slot:default>
+                            <thead>
+                              <tr>
+                                <th class="text-left">
+                                  Nombre
+                                </th>
+                                <th class="text-left">
+                                  Inicio
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="event in colleague_available_event"
+                                :key="event.id"
+                              >
+                                <td>{{ event.name }}</td>
+                                <td>{{ event.start | formatDate }}</td>
+                              </tr>
+                            </tbody>
+                          </template>
+                        </v-simple-table>
+          
+                    </v-container>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card>
+          
+          <Solicitudes
+            id='tablaSolicitudes'
+            class="d-none mt-5"
+          />
+          </v-container>
+
+
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
   import { db, currentUser } from '../main';
   import moment from 'moment';
+  import Solicitudes from './Solicitudes';
+
 
   export default {
+    components: {
+      Solicitudes
+    },
     data: () => ({
       today: new Date().toISOString().substr(0, 10),
       focus: new Date().toISOString().substr(0, 10),
       type: 'month',
       typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days',
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        '4day': '4 Días',
       },
       start: null,
       end: null,
@@ -224,7 +238,8 @@
       active_id: null,
       currentUserid: null,
       user_available_event: null,
-      colleague_available_event: []
+      colleague_available_event: [],
+      weekday: [1 ,2, 3, 4, 5],
     }),
     computed: {
       title () {
@@ -357,8 +372,8 @@
       },
       nth (d) {
         return d > 3 && d < 21
-          ? 'th'
-          : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+          ? ''
+          : ['', '', '', '', '', '', '', '', '', ''][d % 10]
       },
       async getEvents() {
         try {
