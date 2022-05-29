@@ -342,10 +342,11 @@
             appData.id = doc.id;
             const end = new Date(appData.end.seconds * 1000);
             const start = new Date(appData.start.seconds * 1000);
-            const titulo = `${appData.user_name}`;
+            const titulo = appData.available ? `${appData.user_name} 🟢` : `${appData.user_name}`;
+            const color = appData.color;
             
             events.push({
-              color: '#901020',
+              color: color,
               id: appData.id,
               start: moment(start).format('YYYY-MM-DD HH:mm'),
               end: moment(end).format('YYYY-MM-DD HH:mm'),
