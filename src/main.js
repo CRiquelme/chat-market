@@ -46,6 +46,7 @@ const btnLogin = document.querySelector('#btn-login');
 const btnLogout = document.querySelector('#btn-logout');
 const hiUser = document.querySelector('#hi-user');
 const calendario = document.querySelector('#calendario');
+const solicitudes = document.querySelector('#tablaSolicitudes');
 export let currentUser;
 
 firebase.auth().onAuthStateChanged(user => {
@@ -69,6 +70,7 @@ btnLogout.addEventListener('click', () => {
   hiUser.innerHTML = "";
   hiUser.classList.add('d-none');
   calendario.classList.add('d-none');
+  solicitudes.classList.add('d-none');
 });
 
 function init(){
@@ -78,4 +80,5 @@ function init(){
   hiUser.innerHTML = `<h4 class="me-2 d-inline">Hola, ${currentUser.displayName}</h4><img class="rounded-circle mt-2" src="${currentUser.photoURL}" width="40"/>`;
   hiUser.classList.remove('d-none');
   calendario.classList.remove('d-none');
+  solicitudes.classList.remove('d-none');
 }
