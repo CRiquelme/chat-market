@@ -63,6 +63,9 @@
           <v-card>
             <v-container>
                 <h1>¿Quieres intercambiar tu hora de chat?</h1>
+                <v-card v-html="selectedEvent.id"></v-card>
+                <v-card v-html="selectedEvent.user_id"></v-card>
+                <v-btn text @click.prevent="editEvent(selectedEvent)">Cambiar</v-btn>
 
             </v-container>
           </v-card>  
@@ -84,7 +87,7 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon @click="edit_event = true">
+              <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
 
@@ -118,7 +121,7 @@
 </template>
 
 <script>
-  import { db } from '../main';
+  import { db, currentUser } from '../main';
   import moment from 'moment';
 
   export default {
@@ -143,8 +146,9 @@
       details: null,
       color: '#1976D2',
       edit_event: false,
-      currentlyEditing: null
-
+      currentlyEditing: null,
+      active_id: null,
+      currentUserid: null
     }),
     computed: {
       title () {
@@ -185,13 +189,19 @@
       this.getEvents();
     },
     mounted () {
-      this.$refs.calendar.checkChange()
+      this.$refs.calendar.checkChange();
+
+      
     },
     methods: {
 
-      async editEvent(){
+      async editEvent(ev){
         try {
-          console.log("try")
+          console.log(ev.id)
+          await db.collection('eventos').doc(ev.id).update({
+            available: true
+          })
+          
         } catch (error) {
           console.log(error)
         }
@@ -257,11 +267,13 @@
               end: moment(end).format('YYYY-MM-DD HH:mm'),
               details: appData.user_name,
               user: appData.user_name,
+              user_id: appData.user_id,
               run: appData.run,
               name: titulo,
             })
           });
           this.events = events;
+          this.currentUserid = currentUser.uid;
         } catch (error) {
           console.error(error);
         }
