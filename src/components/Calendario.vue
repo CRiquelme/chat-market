@@ -58,10 +58,11 @@
         ></v-calendar>
 
         <!-- Agregar Modal Agregar Evento -->
-<v-container class="grey lighten-5">
-    <v-row no-gutters>
-      <v-col>
-          <v-card>
+  <v-container fluid>
+    <v-card elevation=1>
+      <v-row no-gutters>
+        <v-col>
+          <v-card elevation=0>
             <v-container>
                 <h3>Horario que ofrezco</h3>
                 <v-simple-table>
@@ -88,17 +89,19 @@
           </v-card>
           </v-col>
           <v-col>
-          <v-card>
+          <v-card elevation=0>
             <v-container>
-                <h3>Enviar Solicitud</h3>
-                <v-btn color="primary" dark class="mr-4" v-if="user_available_event != null && colleague_available_event.length > 0">
+              <!-- v-if="user_available_event != null && colleague_available_event.length > 0"  -->
+                <h3 v-if="user_available_event === null">Horario que necesito</h3>
+                <h3 v-else-if="colleague_available_event.length < 1">Horario que necesito</h3>
+                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4">
               Enviar solicitud
               </v-btn>
             </v-container>
           </v-card>
           </v-col>
           <v-col>
-          <v-card>
+          <v-card elevation=0>
             <v-container>
                 <h3>Horario que solicito</h3>
                 <v-simple-table>
@@ -127,9 +130,9 @@
                 
             </v-container>
           </v-card>
-
-          </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
+    </v-card>
   </v-container>
       <!-- Funciones  vue -->
         <v-menu
