@@ -142,7 +142,7 @@
       <!-- Funciones  vue -->
         <v-menu
           v-model="selectedOpen"
-          :close-on-content-click="false"
+          :close-on-content-click="true"
           :activator="selectedElement"
           offset-x
         >
@@ -286,11 +286,16 @@
                   await db.collection('solicitudes-de-cambio').add({
                   doc_id_ofrece: this.user_available_event.id,
                   start_ofrece: this.user_available_event.start,
+                  id_ofrece: this.user_available_event.user_id,
+                  name_ofrece: this.user_available_event.user,
+                  color_ofrece: this.user_available_event.color,
+
                   doc_id_acepta: cEv.id,
                   start_acepta: cEv.start,
                   estado: "pendiente",
                   id_acepta: cEv.user_id,
-                  id_ofrece: this.user_available_event.user_id
+                  name_acepta: cEv.user,
+                  color_acepta: cEv.color
               })
             })
             this.editEvent(this.user_available_event);
