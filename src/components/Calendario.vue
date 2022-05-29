@@ -26,22 +26,22 @@
             </template>
             <v-list>
               <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
+                <v-list-item-title>Día</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
+                <v-list-item-title>Semana</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
+                <v-list-item-title>Mes</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
+                <v-list-item-title>4 días</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="600">
+      <v-sheet height="560">
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -55,6 +55,8 @@
           @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
+          :weekdays="weekday"
+          :interval-minutes= 45
         ></v-calendar>
 
         <!-- Agregar Modal Agregar Evento -->
@@ -130,10 +132,10 @@
       focus: new Date().toISOString().substr(0, 10),
       type: 'month',
       typeToLabel: {
-        month: 'Month',
-        week: 'Week',
-        day: 'Day',
-        '4day': '4 Days',
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        '4day': '4 Días',
       },
       start: null,
       end: null,
@@ -145,9 +147,10 @@
       name: null,
       details: null,
       color: '#1976D2',
-      edit_event: false,
+      dialog: false,
       currentlyEditing: null,
-      active_id: null,
+      weekday: [1, 2, 3, 4, 5],
+      edit_event: false,
       currentUserid: null
     }),
     computed: {
