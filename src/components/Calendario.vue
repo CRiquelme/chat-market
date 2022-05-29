@@ -26,22 +26,22 @@
             </template>
             <v-list>
               <v-list-item @click="type = 'day'">
-                <v-list-item-title>Día</v-list-item-title>
+                <v-list-item-title>Day</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'week'">
-                <v-list-item-title>Semana</v-list-item-title>
+                <v-list-item-title>Week</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'month'">
-                <v-list-item-title>Mes</v-list-item-title>
+                <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 días</v-list-item-title>
+                <v-list-item-title>4 days</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="560">
+      <v-sheet height="600">
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -55,24 +55,91 @@
           @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
-          :weekdays="weekday"
-          :interval-minutes= 45
         ></v-calendar>
 
         <!-- Agregar Modal Agregar Evento -->
-
-        <v-dialog v-model = "edit_event">
+<v-container class="grey lighten-5">
+    <v-row no-gutters>
+      <v-col>
           <v-card>
             <v-container>
-                <h1>¿Quieres intercambiar tu hora de chat?</h1>
-                <v-card v-html="selectedEvent.id"></v-card>
-                <v-card v-html="selectedEvent.user_id"></v-card>
-                <v-btn text @click.prevent="editEvent(selectedEvent)">Cambiar</v-btn>
-
+                <h3>Horario que ofrezco</h3>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">
+                          Nombre
+                        </th>
+                        <th class="text-left">
+                          Inicio
+                        </th>
+                        <th class="text-left">
+                          Fin
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody v-if="user_available_event != null">
+                      <tr>
+                        <td>{{ user_available_event.name }}</td>
+                        <td>{{ user_available_event.start }}</td>
+                        <td>{{ user_available_event.end }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
             </v-container>
-          </v-card>  
-        </v-dialog>
+          </v-card>
+          </v-col>
+          <v-col>
+          <v-card>
+            <v-container>
+                <h3>Enviar Solicitud</h3>
+                <v-btn color="primary" dark class="mr-4" v-if="user_available_event != null && colleague_available_event.length > 0">
+              Enviar solicitud
+              </v-btn>
+            </v-container>
+          </v-card>
+          </v-col>
+          <v-col>
+          <v-card>
+            <v-container>
+                <h3>Horario que solicito</h3>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">
+                          Nombre
+                        </th>
+                        <th class="text-left">
+                          Inicio
+                        </th>
+                        <th class="text-left">
+                          Fin
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="event in colleague_available_event"
+                        :key="event.id"
+                      >
+                        <td>{{ event.name }}</td>
+                        <td>{{ event.start }}</td>
+                        <td>{{ event.end }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+                
+            </v-container>
+          </v-card>
 
+          </v-col>
+    </v-row>
+  </v-container>
+      <!-- Funciones  vue -->
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
@@ -89,9 +156,9 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
+              <!-- <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
                 <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              </v-btn> -->
 
               
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
@@ -114,6 +181,12 @@
               >
                 Cancel
               </v-btn>
+              <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
+              Cargar para cambio
+              </v-btn>
+              <v-btn color="primary" dark class="mr-4" v-if="currentUserid !== selectedEvent.user_id" @click = "cargarHorarioSolicitado(selectedEvent)">
+              Cargar solicitud
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -132,10 +205,10 @@
       focus: new Date().toISOString().substr(0, 10),
       type: 'month',
       typeToLabel: {
-        month: 'Mes',
-        week: 'Semana',
-        day: 'Día',
-        '4day': '4 Días',
+        month: 'Month',
+        week: 'Week',
+        day: 'Day',
+        '4day': '4 Days',
       },
       start: null,
       end: null,
@@ -147,11 +220,12 @@
       name: null,
       details: null,
       color: '#1976D2',
-      dialog: false,
-      currentlyEditing: null,
-      weekday: [1, 2, 3, 4, 5],
       edit_event: false,
-      currentUserid: null
+      currentlyEditing: null,
+      active_id: null,
+      currentUserid: null,
+      user_available_event: null,
+      colleague_available_event: []
     }),
     computed: {
       title () {
@@ -197,6 +271,13 @@
       
     },
     methods: {
+      cargarMiHorario(ev){
+        this.user_available_event = ev;
+        //colleague_available_event
+      },
+      cargarHorarioSolicitado(ev){
+        this.colleague_available_event.push(ev);
+      },
 
       async editEvent(ev){
         try {
@@ -204,7 +285,7 @@
           await db.collection('eventos').doc(ev.id).update({
             available: true
           })
-          this.getEvents();
+          
         } catch (error) {
           console.log(error)
         }
@@ -259,24 +340,12 @@
           snapshot.forEach(doc => {
             let appData = doc.data();
             appData.id = doc.id;
-
-            const isAvailable = () => {
-              if (appData.available) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-
             const end = new Date(appData.end.seconds * 1000);
             const start = new Date(appData.start.seconds * 1000);
-            const titulo = isAvailable() ? `${appData.user_name} 🟢` : `${appData.user_name}`;
-            const color = appData.color;
-
-            
+            const titulo = `${appData.user_name}`;
             
             events.push({
-              color: color,
+              color: '#901020',
               id: appData.id,
               start: moment(start).format('YYYY-MM-DD HH:mm'),
               end: moment(end).format('YYYY-MM-DD HH:mm'),
