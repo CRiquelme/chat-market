@@ -204,7 +204,7 @@
           await db.collection('eventos').doc(ev.id).update({
             available: true
           })
-          
+          this.getEvents();
         } catch (error) {
           console.log(error)
         }
@@ -259,10 +259,21 @@
           snapshot.forEach(doc => {
             let appData = doc.data();
             appData.id = doc.id;
+
+            const isAvailable = () => {
+              if (appData.available) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+
             const end = new Date(appData.end.seconds * 1000);
             const start = new Date(appData.start.seconds * 1000);
-            const titulo = `${appData.user_name}`;
+            const titulo = isAvailable() ? `${appData.user_name} 🟢` : `${appData.user_name}`;
             const color = appData.color;
+
+            
             
             events.push({
               color: color,
