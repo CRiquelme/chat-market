@@ -98,7 +98,7 @@
             <v-container>
                 <h3 v-if="user_available_event === null">&nbsp;</h3>
                 <h3 v-else-if="colleague_available_event.length < 1">&nbsp;</h3>
-                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4">
+                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4" @click.prevent="enviarSolicitud()">
               Enviar solicitud
               </v-btn>
             </v-container>
@@ -141,7 +141,7 @@
       <!-- Funciones  vue -->
         <v-menu
           v-model="selectedOpen"
-          :close-on-content-click="false"
+          :close-on-content-click="true"
           :activator="selectedElement"
           offset-x
         >
@@ -181,10 +181,10 @@
                 Cancel
               </v-btn>
               <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
-              Cargar para cambio
+              Ofrecer Horario
               </v-btn>
               <v-btn color="primary" dark class="mr-4" v-if="currentUserid !== selectedEvent.user_id" @click = "cargarHorarioSolicitado(selectedEvent)">
-              Cargar solicitud
+              Solicitar Horario
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -278,6 +278,34 @@
         this.colleague_available_event.push(ev);
       },
 
+      async enviarSolicitud(){
+        console.log(this.colleague_available_event);
+        try {    
+            this.colleague_available_event.forEach(async (cEv) => {
+                  await db.collection('solicitudes-de-cambio').add({
+                  doc_id_ofrece: this.user_available_event.id,
+                  start_ofrece: this.user_available_event.start,
+                  id_ofrece: this.user_available_event.user_id,
+                  name_ofrece: this.user_available_event.user,
+                  color_ofrece: this.user_available_event.color,
+
+                  doc_id_acepta: cEv.id,
+                  start_acepta: cEv.start,
+                  estado: "pendiente",
+                  id_acepta: cEv.user_id,
+                  name_acepta: cEv.user,
+                  color_acepta: cEv.color
+              })
+            })
+            this.editEvent(this.user_available_event);
+            this.colleague_available_event = [];
+            this.user_available_event = null;
+            this.getEvents()
+        } catch (error) {
+              console.log(error);
+        }
+      },
+
       async editEvent(ev){
         try {
           console.log(ev.id)
@@ -354,6 +382,7 @@
               user_id: appData.user_id,
               run: appData.run,
               name: titulo,
+              block: appData.block_id
             })
           });
           this.events = events;
