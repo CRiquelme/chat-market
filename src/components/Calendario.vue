@@ -99,7 +99,7 @@
               <!-- v-if="user_available_event != null && colleague_available_event.length > 0"  -->
                 <h3 v-if="user_available_event === null">Horario que necesito</h3>
                 <h3 v-else-if="colleague_available_event.length < 1">Horario que necesito</h3>
-                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4">
+                <v-btn block v-else-if="user_available_event !== null && colleague_available_event.length > 0" dark class="mr-4" @click.prevent="enviarSolicitud()">
               Enviar solicitud
               </v-btn>
             </v-container>
@@ -182,10 +182,10 @@
                 Cancel
               </v-btn>
               <v-btn color="primary" dark class="mr-4" v-if="currentUserid === selectedEvent.user_id" @click = "cargarMiHorario(selectedEvent)">
-              Cargar para cambio
+              Ofrecer Horario
               </v-btn>
               <v-btn color="primary" dark class="mr-4" v-if="currentUserid !== selectedEvent.user_id" @click = "cargarHorarioSolicitado(selectedEvent)">
-              Cargar solicitud
+              Solicitar Horario
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -279,6 +279,29 @@
         this.colleague_available_event.push(ev);
       },
 
+      async enviarSolicitud(){
+        console.log(this.colleague_available_event);
+        try {    
+            this.colleague_available_event.forEach(async (cEv) => {
+                  await db.collection('solicitudes-de-cambio').add({
+                  doc_id_ofrece: this.user_available_event.id,
+                  start_ofrece: this.user_available_event.start,
+                  doc_id_acepta: cEv.id,
+                  start_acepta: cEv.start,
+                  estado: "pendiente",
+                  id_acepta: cEv.user_id,
+                  id_ofrece: this.user_available_event.user_id
+              })
+            })
+            this.editEvent(this.user_available_event);
+            this.colleague_available_event = [];
+            this.user_available_event = null;
+            this.getEvents()
+        } catch (error) {
+              console.log(error);
+        }
+      },
+
       async editEvent(ev){
         try {
           console.log(ev.id)
@@ -355,6 +378,7 @@
               user_id: appData.user_id,
               run: appData.run,
               name: titulo,
+              block: appData.block_id
             })
           });
           this.events = events;
