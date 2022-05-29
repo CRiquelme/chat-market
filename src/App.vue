@@ -36,7 +36,11 @@
     <v-main>
       <Calendario 
         id="calendario"
-        class = "d-none"
+        class="d-none"
+      />
+      <Solicitudes
+        id='tablaSolicitudes'
+        class="d-none"
       />
     </v-main>
   </v-app>
@@ -44,12 +48,14 @@
 
 <script>
 import Calendario from './components/Calendario';
+import Solicitudes from './components/Solicitudes';
 
 export default {
   name: 'App',
 
   components: {
-    Calendario
+    Calendario,
+    Solicitudes
   },
 
   data: () => ({
