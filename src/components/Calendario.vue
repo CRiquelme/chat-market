@@ -3,9 +3,6 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
-
-          <!-- Botón Agregar Evento -->
-
           <v-btn outlined class="mr-4" @click="setToday">
             Today
           </v-btn>
@@ -227,27 +224,26 @@
           const snapshot = await db.collection("eventos").get();
           const events = [];
           snapshot.forEach(doc => {
-            console.log(doc.data());
             let appData = doc.data();
             appData.id = doc.id;
             const end = new Date(appData.end.seconds * 1000);
             const start = new Date(appData.start.seconds * 1000);
-            // const titulo = `${appData.user_name}`;
+            const titulo = `${appData.user_name}`;
             
             events.push({
               color: '#901020',
               id: appData.id,
-              start: moment(start).format('YYYY-MM-DD'),
-              end: moment(end).format('YYYY-MM-DD'),
+              start: moment(start).format('YYYY-MM-DD HH:mm'),
+              end: moment(end).format('YYYY-MM-DD HH:mm'),
               details: appData.user_name,
               user: appData.user_name,
               run: appData.run,
+              name: titulo,
             })
           });
-          console.log(events);
           this.events = events;
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       },
     },
