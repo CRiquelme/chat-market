@@ -1,10 +1,12 @@
 import Vue from "vue";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
+
 Vue.config.productionTip = false;
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import 'firebase/compat/auth';
+
 const firebaseConfig = {
   apiKey: "AIzaSyCoBy5jilV8vK3_-TQskRB_C8XAveDlG38",
   authDomain: "fin-calendario-vue.firebaseapp.com",
@@ -21,7 +23,6 @@ new Vue({
   vuetify,
   render: (h) => h(App),
 }).$mount("#app");
-
 
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
@@ -44,7 +45,8 @@ function logout() {
 const btnLogin = document.querySelector('#btn-login');
 const btnLogout = document.querySelector('#btn-logout');
 const hiUser = document.querySelector('#hi-user');
-let currentUser;
+const calendario = document.querySelector('#calendario');
+export let currentUser;
 
 firebase.auth().onAuthStateChanged(user => {
   if (user){
@@ -66,6 +68,7 @@ btnLogout.addEventListener('click', () => {
   btnLogout.classList.add('d-none');
   hiUser.innerHTML = "";
   hiUser.classList.add('d-none');
+  calendario.classList.add('d-none');
 });
 
 function init(){
@@ -74,4 +77,5 @@ function init(){
 
   hiUser.innerHTML = `<h4 class="me-2 d-inline">Hola, ${currentUser.displayName}</h4><img class="rounded-circle mt-2" src="${currentUser.photoURL}" width="40"/>`;
   hiUser.classList.remove('d-none');
+  calendario.classList.remove('d-none');
 }
