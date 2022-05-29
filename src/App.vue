@@ -34,7 +34,10 @@
     </v-app-bar>
 
     <v-main>
-      <Calendario/>
+      <Calendario 
+        id="calendario"
+        class = "d-none"
+      />
     </v-main>
   </v-app>
 </template>

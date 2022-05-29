@@ -61,11 +61,22 @@
 
         <!-- Agregar Modal Agregar Evento -->
 
+        <v-dialog v-model = "edit_event">
+          <v-card>
+            <v-container>
+                <h1>¿Quieres intercambiar tu hora de chat?</h1>
+                <v-card v-html="selectedEvent.id"></v-card>
+                <v-card v-html="selectedEvent.user_id"></v-card>
+                <v-btn text @click.prevent="editEvent(selectedEvent)">Cambiar</v-btn>
+
+            </v-container>
+          </v-card>  
+        </v-dialog>
+
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"
-          full-width
           offset-x
         >
           <v-card
@@ -78,9 +89,11 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
+              <v-btn icon v-if="currentUserid === selectedEvent.user_id" @click="edit_event = true">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
+
+              
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon>
@@ -110,7 +123,7 @@
 </template>
 
 <script>
-  import { db } from '../main';
+  import { db, currentUser } from '../main';
   import moment from 'moment';
 
   export default {
@@ -137,6 +150,8 @@
       dialog: false,
       currentlyEditing: null,
       weekday: [1, 2, 3, 4, 5],
+      edit_event: false,
+      currentUserid: null
     }),
     computed: {
       title () {
@@ -177,9 +192,24 @@
       this.getEvents();
     },
     mounted () {
-      this.$refs.calendar.checkChange()
+      this.$refs.calendar.checkChange();
+
+      
     },
     methods: {
+
+      async editEvent(ev){
+        try {
+          console.log(ev.id)
+          await db.collection('eventos').doc(ev.id).update({
+            available: true
+          })
+          
+        } catch (error) {
+          console.log(error)
+        }
+      },
+
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
@@ -240,11 +270,13 @@
               end: moment(end).format('YYYY-MM-DD HH:mm'),
               details: appData.user_name,
               user: appData.user_name,
+              user_id: appData.user_id,
               run: appData.run,
               name: titulo,
             })
           });
           this.events = events;
+          this.currentUserid = currentUser.uid;
         } catch (error) {
           console.error(error);
         }
