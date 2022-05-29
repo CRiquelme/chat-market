@@ -1,10 +1,12 @@
 import Vue from "vue";
 import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
+
 Vue.config.productionTip = false;
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import 'firebase/compat/auth';
+
 const firebaseConfig = {
   apiKey: "AIzaSyCoBy5jilV8vK3_-TQskRB_C8XAveDlG38",
   authDomain: "fin-calendario-vue.firebaseapp.com",
@@ -21,7 +23,6 @@ new Vue({
   vuetify,
   render: (h) => h(App),
 }).$mount("#app");
-
 
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
