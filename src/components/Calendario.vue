@@ -4,7 +4,7 @@
       <v-sheet height="64">
         <v-toolbar flat color="white">
           <v-btn outlined class="mr-4" @click="setToday">
-            Today
+            Hoy
           </v-btn>
           <v-btn fab text small @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
@@ -51,10 +51,15 @@
           :event-margin-bottom="3"
           :now="today"
           :type="type"
+          :short-weekdays="false"
           @click:event="showEvent"
           @click:more="viewDay"
           @click:date="viewDay"
           @change="updateRange"
+          :weekdays="weekday"
+          :interval-minutes= 45
+          :first-interval="9"
+          :interval-count= 28 
         ></v-calendar>
 
         <!-- Agregar Modal Agregar Evento -->
@@ -221,6 +226,7 @@
       currentUserid: null,
       user_available_event: null,
       colleague_available_event: []
+      currentUserid: null,
     }),
     computed: {
       title () {
