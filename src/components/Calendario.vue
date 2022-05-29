@@ -74,16 +74,12 @@
                         <th class="text-left">
                           Inicio
                         </th>
-                        <th class="text-left">
-                          Fin
-                        </th>
                       </tr>
                     </thead>
                     <tbody v-if="user_available_event != null">
                       <tr>
                         <td>{{ user_available_event.name }}</td>
-                        <td>{{ user_available_event.start }}</td>
-                        <td>{{ user_available_event.end }}</td>
+                        <td>{{ user_available_event.start | formatDate  }}</td>
                       </tr>
                     </tbody>
                   </template>
@@ -115,9 +111,6 @@
                         <th class="text-left">
                           Inicio
                         </th>
-                        <th class="text-left">
-                          Fin
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -126,8 +119,7 @@
                         :key="event.id"
                       >
                         <td>{{ event.name }}</td>
-                        <td>{{ event.start }}</td>
-                        <td>{{ event.end }}</td>
+                        <td>{{ event.start | formatDate }}</td>
                       </tr>
                     </tbody>
                   </template>
@@ -361,6 +353,12 @@
         } catch (error) {
           console.error(error);
         }
+      },
+    },
+
+    filters: {
+      formatDate (date) {
+        return moment(date).format('DD-MM-YYYY HH:mm')
       },
     },
   }
