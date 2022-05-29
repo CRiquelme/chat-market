@@ -226,7 +226,6 @@
       currentUserid: null,
       user_available_event: null,
       colleague_available_event: []
-      currentUserid: null,
     }),
     computed: {
       title () {
