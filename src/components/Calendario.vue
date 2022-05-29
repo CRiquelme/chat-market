@@ -62,11 +62,19 @@
 
         <!-- Agregar Modal Agregar Evento -->
 
+        <v-dialog v-model = "edit_event">
+          <v-card>
+            <v-container>
+                <h1>¿Quieres intercambiar tu hora de chat?</h1>
+
+            </v-container>
+          </v-card>  
+        </v-dialog>
+
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"
-          full-width
           offset-x
         >
           <v-card
@@ -79,9 +87,11 @@
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
+              <v-btn icon @click="edit_event = true">
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
+
+              
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon>
@@ -135,8 +145,9 @@
       name: null,
       details: null,
       color: '#1976D2',
-      dialog: false,
+      edit_event: false,
       currentlyEditing: null
+
     }),
     computed: {
       title () {
@@ -180,6 +191,15 @@
       this.$refs.calendar.checkChange()
     },
     methods: {
+
+      async editEvent(){
+        try {
+          console.log("try")
+        } catch (error) {
+          console.log(error)
+        }
+      },
+
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
