@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        <p>FIN!</p>
+        <img :src="image" width="90" />
       </div>
 
       <v-spacer></v-spacer>
@@ -15,7 +15,7 @@
       >
         <span>Login</span>
       </v-btn>
-      <div id='hi-user' class='d-none mx-2'></div>
+      <div id='hi-user' class='d-none mx-2 d-flex align-center'></div>
       <v-btn
         id='btn-logout'
         class='d-none'
@@ -23,23 +23,11 @@
         <span>Logout</span>
       </v-btn>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Menu derecha</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
       <Calendario 
         id="calendario"
-        class="d-none"
-      />
-      <Solicitudes
-        id='tablaSolicitudes'
         class="d-none"
       />
     </v-main>
@@ -48,18 +36,18 @@
 
 <script>
 import Calendario from './components/Calendario';
-import Solicitudes from './components/Solicitudes';
+import logo from './assets/logo_fin.png';
 
 export default {
   name: 'App',
 
   components: {
-    Calendario,
-    Solicitudes
+    Calendario
   },
 
   data: () => ({
     //
+    image: logo,
   }),
 };
 </script>

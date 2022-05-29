@@ -1,6 +1,7 @@
 <template>
-<div> 
-  <h1> Solicitudes recibidas </h1>
+<v-card elevation=1>
+    <v-container fluid>
+        <h3> Solicitudes recibidas </h3>
 
 <v-simple-table>
     <template v-slot:default>
@@ -18,10 +19,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="solicitud in bloques"
-                        :key="solicitud.id">
-        <td>{{ solicitud.bloqueSolicitado }}</td>
-        <td>{{ solicitud.bloqueOfrecido }}</td>
+        <tr v-for="solicitud in bloques" :key="solicitud.id">
+        <td>{{ solicitud.bloqueSolicitado | formatDate }}</td>
+        <td>{{ solicitud.bloqueOfrecido | formatDate }}</td>
         <td>
             <v-btn
                 class="ma-2"
@@ -58,13 +58,13 @@
     </template>
 </v-simple-table>
 
-
-</div>
+</v-container>
+</v-card>
 </template>
 
 <script>
-    
-import { db, currentUser } from '../main';
+    import moment from 'moment';
+    import { db, currentUser } from '../main';
     export default {
         data () {
             return {
@@ -135,7 +135,13 @@ import { db, currentUser } from '../main';
 
 
 
-        }
+        },
+
+        filters: {
+            formatDate (date) {
+                return moment(date).format('DD-MM-YYYY HH:mm')
+            },
+        },
 
     }
 </script>
