@@ -10,6 +10,18 @@
       </div>
 
       <v-spacer></v-spacer>
+      <v-btn
+        id='btn-login'
+      >
+        <span>Login</span>
+      </v-btn>
+      <div id='hi-user' class='d-none mx-2'></div>
+      <v-btn
+        id='btn-logout'
+        class='d-none'
+      >
+        <span>Logout</span>
+      </v-btn>
 
       <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
